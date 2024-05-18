@@ -3,8 +3,11 @@ import streamlit as st
 from datetime import datetime
 from streamlit_option_menu import option_menu
 import requests
+from PIL import Image
 
-logo = st.image("download.jpg", width=200) 
+iconUser = Image.open('userAvatar.jpeg')
+
+logo = st.image("logo.jpeg", width=200) 
 
 variables = ["X_Y_Z_A_C1_SPB1_Machine_Machine_State",
  "X_Y_Z_A_C1_SPB1_Machine_Machine_Stop_Condition",
@@ -76,7 +79,8 @@ def replace_keys(data):
             'message': entry['content']
         }
         new_data.append(new_entry)
-    return new_data
+    oggett = { "input": new_data}
+    return oggett
 
 
 # Function to get the bot response
@@ -97,7 +101,7 @@ def get_bot_response(prompt, msgs):
 
 # Main function
 def main():
-    st.title("ChatBot")
+    st.title("PlantMate")
 
     # Initialize session state variables
     if "input_text" not in st.session_state:
@@ -161,8 +165,12 @@ def main():
     chat_container = st.container()
     with chat_container:
         for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+            if (message["role"] == 'assistant'):
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+            else: 
+                with st.chat_message(message["role"], avatar=iconUser):
+                    st.markdown(message["content"])
 
     # Chat input and clear button at the bottom
     col1, col2 = st.columns([4, 1])

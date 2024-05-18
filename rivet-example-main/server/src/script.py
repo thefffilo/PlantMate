@@ -1,20 +1,15 @@
 import json
 
-def find_max():
-    # Load the data from the file
-    with open('input.json', 'r') as file:
-        data = json.load(file)
-    
-    # Check if the variable exists in the data
-    if 'A__Axis__Rotary_Speed' in data:
-        # Find the maximum of the variable
-        max_value = max(data['A__Axis__Rotary_Speed'])
-        
-        # Write the output to a file
-        with open('output.json', 'w') as outfile:
-            json.dump({'max_A__Axis__Rotary_Speed': max_value}, outfile)
-    else:
-        print("Variable 'A__Axis__Rotary_Speed' not found in the data.")
+# Load the data from the input.json file
+with open('input.json') as f:
+    data = json.load(f)
 
-# Call the function
-find_max()
+# Extract the 'A__Axis__Rotary_Speed' values
+a_axis_rotary_speeds = [d['A__Axis__Rotary_Speed'] for d in data]
+
+# Find the maximum 'A__Axis__Rotary_Speed'
+max_a_axis_rotary_speed = max(a_axis_rotary_speeds)
+
+# Write the maximum 'A__Axis__Rotary_Speed' to the output.json file
+with open('output.json', 'w') as f:
+    json.dump({'max_A__Axis__Rotary_Speed': max_a_axis_rotary_speed}, f)
