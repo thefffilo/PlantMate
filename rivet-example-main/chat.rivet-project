@@ -1,0 +1,498 @@
+version: 4
+data:
+  attachedData:
+    trivet:
+      testSuites: []
+      version: 1
+  graphs:
+    3IKFYDjtOs4tkXP6Jf4nB:
+      metadata:
+        description: ""
+        id: 3IKFYDjtOs4tkXP6Jf4nB
+        name: Functions/get_execution_data
+      nodes:
+        '[EMlFBd76LVSb_oJ38p6jO]:text "URL"':
+          data:
+            text: http://127.0.0.1:8000/plants/{{plant}}/workcenters/{{workcenter}}/assets/{{asset}}/executions/{{start_date}}/data
+          outgoingConnections:
+            - output->"Http Call" okneYlhaZsYeat5TsoZuR/url
+          visualData: 473.4000244140625/297.6000061035156/330/11//
+        '[EV0Wa3PBNOiH7mk0uWas7]:graphInput "Graph Input"':
+          data:
+            dataType: object
+            id: input
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Destructure" udAUXt-gA76rPYEfvkgiN/object
+          visualData: -216.48971953829403/329.4281259629062/330/30//
+        '[LTP2_inaO_fNRurldEICo]:graphOutput "Graph Output"':
+          data:
+            dataType: string
+            id: output
+          visualData: 772.8406265790592/577.7839828019202/330/116//
+        '[UGQ7P5VJENkSz3qBGtzaW]:externalCall "External Call"':
+          data:
+            functionName: writeToJsonFile
+            useErrorOutput: false
+            useFunctionNameInput: false
+          visualData: 66.05355878341925/591.6098585229887/180/116//
+        '[XaE0ttLJhc4vXr-uYYevR]:text "Text"':
+          data:
+            text: "status {{status}}\r\n{{input}}"
+          outgoingConnections:
+            - output->"Graph Output" LTP2_inaO_fNRurldEICo/value
+          visualData: 361.6402557819912/579.1179741125304/330/116//
+        '[okneYlhaZsYeat5TsoZuR]:httpCall "Http Call"':
+          data:
+            body: ""
+            errorOnNon200: true
+            headers: ""
+            method: GET
+            url: ""
+            useUrlInput: true
+          outgoingConnections:
+            - res_body->"External Call" UGQ7P5VJENkSz3qBGtzaW/arguments
+            - statusCode->"Text" XaE0ttLJhc4vXr-uYYevR/status
+          visualData: 852.0251433700844/281.1312749594713/280/19//
+        '[udAUXt-gA76rPYEfvkgiN]:destructure "Destructure"':
+          data:
+            paths:
+              - $.plant
+              - $.workcenter
+              - $.asset
+              - $.start_date
+          outgoingConnections:
+            - match_0->"URL" EMlFBd76LVSb_oJ38p6jO/plant
+            - match_1->"URL" EMlFBd76LVSb_oJ38p6jO/workcenter
+            - match_2->"URL" EMlFBd76LVSb_oJ38p6jO/asset
+            - match_3->"URL" EMlFBd76LVSb_oJ38p6jO/start_date
+          visualData: 166.56226255771406/307.8419641145333/280/24//
+    JSjTZuzVVrbHF2uF2_1vf:
+      metadata:
+        description: ""
+        id: JSjTZuzVVrbHF2uF2_1vf
+        name: Main Graph
+      nodes:
+        '[6Ro4JfXgdk90yR82UCA0I]:coalesce "Coalesce"':
+          outgoingConnections:
+            - output->"Prompt" M4SUbcGB6wzvlxOBovXtB/input
+          visualData: 1807.7409622323423/525.7406551905932/180/177//
+        '[BDa6EyhX9DsJ-7QdMFN9n]:graphInput "Graph Input"':
+          data:
+            dataType: object
+            defaultValue: "Default question: what can you help me with?"
+            id: input
+            text: ""
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Text" rErbAyVbQWHCpWprRwmYo/input
+          visualData: 74.88236783037802/-23.33661998389561/330/169//
+        '[GLJW-qI7pyuyo1EKNk4Ta]:match "Match"':
+          data:
+            cases:
+              - get_data
+              - get_execution_data
+              - get_variables
+            exclusive: true
+          outgoingConnections:
+            - case1->"Subgraph" j-hbr2GgU07hT6FPrKM7V/input
+            - case2->"Subgraph" mP1PizWCT4_qXet3f1iwA/input
+            - case3->"Subgraph" V4WXQB62NMFyLWdow58cQ/input
+          visualData: 1851.484146145409/-69.20625030983084/280/187//
+        '[J4mE_30qVLH_SvBmk6WpW]:assemblePrompt "Assemble Prompt"':
+          outgoingConnections:
+            - prompt->"Chat" gunKMR1qiUiKOz-O4Df_l/prompt
+          visualData: 2212.4096582637058/677.1371687416791/280/193//
+        '[Kh-gYJtBGResJqzt4fI5W]:gptFunction "GPT Function"':
+          data:
+            body: ""
+            description: "Function that retrieves variables data for a specific asset.  "
+            name: get_data
+            schema: >-
+              {
+                "type": "object",
+                "properties": {
+                  "plant":{
+                    "type": "string",
+                    "description": "The plant identifier"
+                  },
+                  "workcenter":{
+                    "type": "string",
+                    "description": "The workcenter identifier"
+                  },
+                  "asset":{
+                    "type": "string",
+                    "description": "The asset identifier"
+                  },
+                  "start_date":{
+                    "type": "string",
+                    "description": "The starting date for data retrieval"
+                  },
+                  "end_date":{
+                    "type": "string",
+                    "description": "The ending date for data retrieval"
+                  },
+                  "variables":{
+                    "type": "string",
+                    "description": "A list of the variables of interest, comma separated"
+                  }
+                }
+              }
+            text: ""
+          outgoingConnections:
+            - function->"Array" nCGSLokRhkpWKS1XdM1bM/input2
+          visualData: 52.74993822884265/455.823436832796/280/107//
+        '[M4SUbcGB6wzvlxOBovXtB]:prompt "Prompt"':
+          data:
+            enableFunctionCall: false
+            promptText: "{{input}}"
+            type: function
+            useNameInput: true
+            useTypeInput: false
+          outgoingConnections:
+            - output->"Assemble Prompt" J4mE_30qVLH_SvBmk6WpW/message2
+          visualData: 2107.9895374001107/375.93050402722815/280/177//
+        '[RDZb6td-h5YYNHhR-4tXl]:chat "Chat"':
+          data:
+            cache: false
+            enableFunctionUse: true
+            headers: []
+            maxTokens: 1024
+            model: gpt-3.5-turbo
+            parallelFunctionCalling: true
+            schema: ""
+            stop: ""
+            temperature: 0.5
+            top_p: 1
+            useAsGraphPartialOutput: true
+            useFrequencyPenaltyInput: false
+            useMaxTokensInput: false
+            useModelInput: false
+            usePresencePenaltyInput: false
+            useStop: false
+            useStopInput: false
+            useTemperatureInput: false
+            useTopP: false
+            useTopPInput: false
+            useUseTopPInput: false
+            useUserInput: false
+          outgoingConnections:
+            - all-messages->"Assemble Prompt" J4mE_30qVLH_SvBmk6WpW/message1
+            - function-calls->"Extract Object Path" hE41KJCLl3eiE8z70Pc2N/object
+            - function-calls->"Extract Object Path" o_mo522qTqDdloUicp2kU/object
+            - function-calls->"Extract Object Path" zd5s1_Obos9PG8tuAYiiO/object
+            - response->"If" t4Y27oy_Fjs__KbRr2VMM/if
+            - response->"If" t4Y27oy_Fjs__KbRr2VMM/value
+          visualData: 955.176876447296/27.974186317186877/230/54//
+        '[THLFbh1R3ou-i4jUut9ot]:gptFunction "GPT Function"':
+          data:
+            body: ""
+            description: Function that retrieves data of a specific execution of an asset.
+            name: get_execution_data
+            schema: |-
+              {
+                "type": "object",
+                "properties": {
+                  "plant":{
+                    "type": "string",
+                    "description": "The plant identifier"
+                  },
+                  "workcenter":{
+                    "type": "string",
+                    "description": "The workcenter identifier"
+                  },
+                  "asset":{
+                    "type": "string",
+                    "description": "The asset identifier"
+                  },
+                  "start_date":{
+                    "type": "string",
+                    "description": "The execution starting date"
+                  }
+                }
+              }
+            text: ""
+          outgoingConnections:
+            - function->"Array" nCGSLokRhkpWKS1XdM1bM/input3
+          visualData: 52.74993822884265/655.823436832796/280/107//
+        '[V4WXQB62NMFyLWdow58cQ]:subGraph "Subgraph"':
+          data:
+            graphId: p6Z3D3rePbhfyy-oXUFJ-
+            useAsGraphPartialOutput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - output->"Coalesce" 6Ro4JfXgdk90yR82UCA0I/input3
+          visualData: 1321.468882014894/830.7493461626389/330/177//
+        '[_80zBAQSjYUXlQ81f5dmq]:graphOutput "Graph Output"':
+          data:
+            dataType: any
+            id: output
+          visualData: 2833.2640024471725/540.354528303933/330/197//
+        '[fMmrmyx9l7VTHa1MizfNO]:gptFunction "GPT Function"':
+          data:
+            body: ""
+            description: Function that retrieves all available variables for a specific
+              asset.
+            name: get_variables
+            schema: |-
+              {
+                "type": "object",
+                "properties": {
+                  "plant":{
+                    "type": "string",
+                    "description": "The plant identifier"
+                  },
+                  "workcenter":{
+                    "type": "string",
+                    "description": "The workcenter identifier"
+                  },
+                  "asset":{
+                    "type": "string",
+                    "description": "The asset identifier"
+                  }
+                }
+              }
+          visualData: 52.74993822884265/255.82343683279603/280/107//
+        '[gunKMR1qiUiKOz-O4Df_l]:chat "Chat"':
+          data:
+            cache: false
+            enableFunctionUse: false
+            headers: []
+            maxTokens: 1024
+            model: gpt-4
+            parallelFunctionCalling: true
+            stop: ""
+            temperature: 0.5
+            top_p: 1
+            useAsGraphPartialOutput: true
+            useFrequencyPenaltyInput: false
+            useMaxTokensInput: false
+            useModelInput: false
+            usePresencePenaltyInput: false
+            useStop: false
+            useStopInput: false
+            useTemperatureInput: false
+            useTopP: false
+            useTopPInput: false
+            useUseTopPInput: false
+            useUserInput: false
+          outgoingConnections:
+            - response->"Graph Output" _80zBAQSjYUXlQ81f5dmq/value
+          visualData: 2557.184078122201/544.6997787688077/230/196//
+        '[hE41KJCLl3eiE8z70Pc2N]:extractObjectPath "Extract Object Path"':
+          data:
+            path: $[0].name
+            usePathInput: false
+          outgoingConnections:
+            - match->"Match" GLJW-qI7pyuyo1EKNk4Ta/input
+          visualData: 1410.79247547269/-191.98127611722478/280/200//
+        '[j-hbr2GgU07hT6FPrKM7V]:subGraph "Subgraph"':
+          data:
+            graphId: xhqSZzEG6I8K8f1fFoKsq
+            useAsGraphPartialOutput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - output->"Coalesce" 6Ro4JfXgdk90yR82UCA0I/input2
+          visualData: 1322.712148865222/560.7275848178551/330/177//
+        '[jR7H84qNeBmV3oc698URb]:graphOutput "Graph Output"':
+          data:
+            dataType: any
+            id: output
+          visualData: 2544.703719338571/-376.9788953332958/330/183//
+        '[mP1PizWCT4_qXet3f1iwA]:subGraph "Subgraph"':
+          data:
+            graphId: 3IKFYDjtOs4tkXP6Jf4nB
+            useAsGraphPartialOutput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - output->"Coalesce" 6Ro4JfXgdk90yR82UCA0I/input1
+          visualData: 1328.0666902482983/685.967195622411/330/177//
+        '[nCGSLokRhkpWKS1XdM1bM]:array "Array"':
+          data:
+            flatten: true
+            flattenDeep: false
+            schema: ""
+          outgoingConnections:
+            - output->"Chat" RDZb6td-h5YYNHhR-4tXl/functions
+          visualData: 597.4210510724778/419.70025051211184/230/201//
+        '[o_mo522qTqDdloUicp2kU]:extractObjectPath "Extract Object Path"':
+          data:
+            path: $[0].id
+            usePathInput: false
+          outgoingConnections:
+            - match->"Prompt" M4SUbcGB6wzvlxOBovXtB/name
+          visualData: 1410.880007637859/142.1728921919139/280/171//
+        '[phyDcL4VS3lMlGjT3030D]:text "Text"':
+          data:
+            text: Now you can write the python code.
+          outgoingConnections:
+            - output->"Assemble Prompt" J4mE_30qVLH_SvBmk6WpW/message3
+          visualData: 1801.2625468879114/813.9540975301843/330/195//
+        '[rErbAyVbQWHCpWprRwmYo]:text "Text"':
+          data:
+            text: "{{input}}"
+          outgoingConnections:
+            - output->"Chat" RDZb6td-h5YYNHhR-4tXl/prompt
+          visualData: 532.3555376939685/104.3867949435053/330/170//
+        '[t4Y27oy_Fjs__KbRr2VMM]:if "If"':
+          data:
+            unconnectedControlFlowExcluded: true
+          outgoingConnections:
+            - output->"Graph Output" jR7H84qNeBmV3oc698URb/value
+          visualData: 2272.708864319797/-345.71839033075315/155/186//
+        '[w_iDN7YwHfOsIkQdybyg5]:text "System Promp"':
+          data:
+            text: "You are an assistant that helps users retrieve information via functions
+              and then writes some python code to fullfil the user request. \r
+
+              The output of the code should be in a file named
+              \"output.json\".\r
+
+              The functions that retrieve data write the data in a
+              file named \"input.json\".\r
+
+              The first thing you must do is retrieve data, then
+              you can procede writing python code to find the solution for the
+              user.\r\n"
+          outgoingConnections:
+            - output->"Chat" RDZb6td-h5YYNHhR-4tXl/systemPrompt
+          visualData: 533.9735750722499/-207.28900503646864/330/198//
+        '[zd5s1_Obos9PG8tuAYiiO]:extractObjectPath "Extract Object Path"':
+          data:
+            path: $[0].arguments
+            usePathInput: false
+          outgoingConnections:
+            - match->"Match" GLJW-qI7pyuyo1EKNk4Ta/value
+          visualData: 1411.080801135736/-19.97375834062003/280/148//
+    p6Z3D3rePbhfyy-oXUFJ-:
+      metadata:
+        description: ""
+        id: p6Z3D3rePbhfyy-oXUFJ-
+        name: Functions/get_variables
+      nodes:
+        '[4g8a9I3pans46EbUUH1Bq]:graphInput "Graph Input"':
+          data:
+            dataType: object
+            id: input
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Destructure" BWbTkVYzMk7QQqa4mBJ9I/object
+          visualData: -135.65593846532676/150.5660006543746/330/33//
+        '[9Vn34Os7UGHxlZP-P7Z54]:httpCall "Http Call"':
+          data:
+            body: ""
+            errorOnNon200: true
+            headers: ""
+            method: GET
+            url: ""
+            useUrlInput: true
+          outgoingConnections:
+            - res_body->"External Call" Biw95GwhQbWPuWl6nG5mb/arguments
+          visualData: 989.8901158370261/86.3613929154983/280/103//
+        '[BWbTkVYzMk7QQqa4mBJ9I]:destructure "Destructure"':
+          data:
+            paths:
+              - $.plant
+              - $.workcenter
+              - $.asset
+          outgoingConnections:
+            - match_0->"URL" JqriuQ2KfpBKNxViZlCkw/plant
+            - match_1->"URL" JqriuQ2KfpBKNxViZlCkw/workcenter
+            - match_2->"URL" JqriuQ2KfpBKNxViZlCkw/asset
+          visualData: 214.07909040161286/144.16069126547924/280/34//
+        '[Biw95GwhQbWPuWl6nG5mb]:externalCall "External Call"':
+          data:
+            functionName: writeToJsonFile
+            useErrorOutput: false
+            useFunctionNameInput: false
+          outgoingConnections:
+            - result->"Text" vnzUD5XcADFNVm9aMVjIk/input
+          visualData: 31.577746891331344/486.26664227816457/180/112//
+        '[JqriuQ2KfpBKNxViZlCkw]:text "URL"':
+          data:
+            text: http://127.0.0.1:8000/plants/{{plant}}/workcenters/{{workcenter}}/assets/{{asset}}/variables
+          outgoingConnections:
+            - output->"Http Call" 9Vn34Os7UGHxlZP-P7Z54/url
+          visualData: 549.0113955717758/135.6137315669388/330/35//
+        '[anF2iYHuq1J2K57D4EEjb]:graphOutput "Graph Output"':
+          data:
+            dataType: string
+            id: output
+          visualData: 738.3648146869713/472.440766557096/330/115//
+        '[vnzUD5XcADFNVm9aMVjIk]:text "Text"':
+          data:
+            text: "status 200\r\n{{input}}"
+          outgoingConnections:
+            - output->"Graph Output" anF2iYHuq1J2K57D4EEjb/value
+          visualData: 327.1644438899033/473.7747578677063/330/113//
+    xhqSZzEG6I8K8f1fFoKsq:
+      metadata:
+        description: ""
+        id: xhqSZzEG6I8K8f1fFoKsq
+        name: Functions/get_data
+      nodes:
+        '[2NKhRnAK1S2ZscYgvCTdG]:destructure "Destructure"':
+          data:
+            paths:
+              - $.plant
+              - $.workcenter
+              - $.asset
+              - $.start_date
+              - $.end_date
+              - $.variables
+          outgoingConnections:
+            - match_0->"URL" 66OUrqBhzTs_niR3P53xm/plant
+            - match_1->"URL" 66OUrqBhzTs_niR3P53xm/workcenter
+            - match_2->"URL" 66OUrqBhzTs_niR3P53xm/asset
+            - match_3->"URL" 66OUrqBhzTs_niR3P53xm/start_date
+            - match_4->"URL" 66OUrqBhzTs_niR3P53xm/end_date
+            - match_5->"URL" 66OUrqBhzTs_niR3P53xm/variables
+          visualData: 419.365806804577/267.0662703958588/280/154//
+        '[66OUrqBhzTs_niR3P53xm]:text "URL"':
+          data:
+            text: http://127.0.0.1:8000/plants/{{plant}}/workcenters/{{workcenter}}/assets/{{asset}}/data?start_date={{start_date}}&end_date={{end_date}}&variables={{variables}}
+          outgoingConnections:
+            - output->"Http Call" BMhF3TRh03cPqjb5XbAIf/url
+          visualData: 802.7050297033944/250.25939868099954/330/136//
+        '[BMhF3TRh03cPqjb5XbAIf]:httpCall "Http Call"':
+          data:
+            body: ""
+            errorOnNon200: true
+            headers: ""
+            method: GET
+            url: ""
+            useUrlInput: true
+          outgoingConnections:
+            - res_body->"External Call" xH3jWTvBYuz7U5gCpcX_l/arguments
+            - statusCode->"Text" v6WF6q9ELy9u7oj9Y3yW-/status
+          visualData: 1234.4580565506392/269.7654300710547/280/135//
+        '[VqGma3VWLoCfiInxG9DMM]:graphOutput "Graph Output"':
+          data:
+            dataType: string
+            id: output
+          visualData: 1050.772649347968/650.2590195074408/330/155//
+        '[igDJgCm_qFCT9eho1g6U9]:graphInput "Graph Input"':
+          data:
+            dataType: object
+            id: input
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Destructure" 2NKhRnAK1S2ZscYgvCTdG/object
+          visualData: 51.987450492554785/257.71724741998827/330/154//
+        '[v6WF6q9ELy9u7oj9Y3yW-]:text "Text"':
+          data:
+            text: "status {{status}}\r\n{{input}}"
+          outgoingConnections:
+            - output->"Graph Output" VqGma3VWLoCfiInxG9DMM/value
+          visualData: 630.0933297482316/648.4334013942862/330/155//
+        '[xH3jWTvBYuz7U5gCpcX_l]:externalCall "External Call"':
+          data:
+            functionName: writeToJsonFile
+            useErrorOutput: false
+            useFunctionNameInput: false
+          visualData: 321.92620264011845/665.7364857105568/180/155//
+  metadata:
+    description: ""
+    id: F3ZrSTl3-JHYB_qxcDayf
+    title: Untitled Project
+  plugins: []
