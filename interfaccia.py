@@ -143,11 +143,9 @@ def main():
     # Function to send chat data
     def send_to_chat():
         chat_input = ""
-        chat_input += f"{plant_selection}, \n"
-        chat_input += f"{workcenter_selection}, \n"
-        chat_input += f"{asset_selection}, \n"
-        chat_input += f"Data di inizio: {startdata_selection} {starthour_seletion} \n"
-        chat_input += f"Data di fine: {enddata_selection} {endhour_seletion} \n"
+        chat_input += f"Plant {plant_selection}, workcenter {workcenter_selection}, asset {asset_selection}, "
+        chat_input += f"Data di inizio: {startdata_selection} {starthour_seletion} "
+        chat_input += f"Data di fine: {enddata_selection} {endhour_seletion} "
         chat_input += "Variabili selezionate:\n"
         for variabile in variable_selection:
             chat_input += variabile + "\n"
@@ -175,7 +173,7 @@ def main():
     # Chat input and clear button at the bottom
     col1, col2 = st.columns([4, 1])
     with col1:
-        prompt = st.chat_input("What is up?")
+        prompt = st.chat_input("How can I assist you?")
     with col2:
         if st.button('Clear Messages'):
             clear_messages()
