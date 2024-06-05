@@ -124,7 +124,6 @@ def replace_keys(data):
 # Function to get the bot response
 def get_bot_response(prompt, msgs): 
     base_url = "http://localhost:3001/api/rivet-example"
-    # data = {"input": [{"message": prompt, "type": "user"}]}
     data = replace_keys(msgs)
     print(data)
 
@@ -133,9 +132,10 @@ def get_bot_response(prompt, msgs):
         response.raise_for_status()
         data = response.json()
         print('RISPOSTA: ', data)
-        return data.get("output", "No response from the bot.")  # Extract the 'response' field
+        return data.get("output", "No response from the bot."), data.get("image", None)
     except requests.exceptions.RequestException as e:
-        return f"Error: {e}"  # Return an error message in case of an exception
+        return f"Error: {e}", None
+
 
 # Main function
 def main():
@@ -201,10 +201,12 @@ def main():
     chat_container = st.container()
     with chat_container:
         for message in st.session_state.messages:
-            if (message["role"] == 'assistant'):
+            if message["role"] == 'assistant':
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
-            else: 
+                    if "image" in message:
+                        st.image(message["image"])
+            else:
                 with st.chat_message(message["role"], avatar=iconUser):
                     st.markdown(message["content"])
 
@@ -221,9 +223,13 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         
         # Send the user input to a chatbot API and get the response
-        response = get_bot_response(prompt, st.session_state.messages)
+        response, image = get_bot_response(prompt, st.session_state.messages)
         
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        assistant_message = {"role": "assistant", "content": response}
+        if image:
+            assistant_message["image"] = image
+        st.session_state.messages.append(assistant_message)
+        
         st.experimental_rerun()  # Force rerun to update the UI
 
     if st.button("Transfer variables"):

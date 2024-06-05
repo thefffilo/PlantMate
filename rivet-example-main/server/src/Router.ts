@@ -16,6 +16,15 @@ function extractPythonCode(text: string): string {
     const match = text.match(regex);
     return match ? match[1] : '';
 }
+function deleteFile(filePath: string) {
+  fs.unlink(filePath, (err) => {
+      if (err) {
+          console.error(`Errore nell'eliminazione del file ${filePath}:`, err);
+          return;
+      }
+      console.log(`File ${filePath} eliminato con successo.`);
+  });
+}
 
 const apiRouter = Router();
 
@@ -41,14 +50,43 @@ apiRouter.post('/rivet-example', async (req, res) => {
               console.log('Python code extracted and written to script.py');
               runPythonScript(filePath)
                 .then(output => {
-                    fs.readFile('output.json', 'utf8', (err, data) => {
+                    let textOutput = '';
+                    let imgSrcString = '';
+                    fs.readFile('output.json', 'utf8', async (err, data)  => {
                       if (err) {
                           console.error('Errore nella lettura del file output.json:', err);
-                          return;
                       }
-                      
-                      console.log("output.json: ", data);
-                      res.json({ output: data });
+                      else {
+                        const jsonData = JSON.parse(data);
+                        // simple (and bad) method for removing json formatting from the output.
+                        for (let key in jsonData) {
+                            if (jsonData.hasOwnProperty(key)) {
+                                textOutput += `${key}: ${jsonData[key]}\n`;
+                            }
+                        }
+                      }
+
+                      fs.readFile('output.png', (err, imageData) => {
+                        if (err) {
+                          console.error('Errore nella lettura del file output.png:', err);
+                        } else {
+                          const base64Image = imageData.toString('base64');
+                          imgSrcString = `data:image/png;base64,${base64Image}`;
+                        }
+        
+                        // Elimina i file dopo aver inviato la risposta
+                        if(textOutput && imgSrcString)
+                          res.json({ output: textOutput, image: imgSrcString });
+                        else if(imgSrcString)
+                          res.json({ image: imgSrcString });
+                        else if (textOutput)
+                          res.json({ output: textOutput });
+                        else 
+                          res.json({ output: "error" });
+  
+                        deleteFile('output.json');
+                        deleteFile('output.png');
+                      });
                     });
                 })
                 .catch(error => {

@@ -141,7 +141,7 @@ data:
             text: ""
           outgoingConnections:
             - function->"Array" nCGSLokRhkpWKS1XdM1bM/input2
-          visualData: 52.74993822884265/455.823436832796/280/107//
+          visualData: 52.74993822884265/455.823436832796/280/207//
         '[M4SUbcGB6wzvlxOBovXtB]:prompt "Prompt"':
           data:
             enableFunctionCall: false
@@ -227,7 +227,7 @@ data:
           data:
             dataType: any
             id: output
-          visualData: 2833.2640024471725/540.354528303933/330/197//
+          visualData: 2844.9124409315255/578.2122033278843/330/205//
         '[fMmrmyx9l7VTHa1MizfNO]:gptFunction "GPT Function"':
           data:
             body: ""
@@ -328,8 +328,8 @@ data:
 
               The input.json has this structure: \r
 
-              [{ variable1: xxx, variable2: xxx},{ variable1: xxx,
-              variable2: xxx},.....]"
+              [{ timestamp: xxx, variable1: xxx, variable2: xxx},{
+              timestamp: xxx, variable1: xxx, variable2: xxx},.....]"
           outgoingConnections:
             - output->"Assemble Prompt" J4mE_30qVLH_SvBmk6WpW/message3
           visualData: 1801.2625468879114/813.9540975301843/330/195//
@@ -355,6 +355,9 @@ data:
 
               The functions that retrieve data write the data in a
               file named \"input.json\".\r
+
+              If the user ask for a plot, you'll save the image in
+              a file called \"output.png\".\r
 
               The first thing you must do is retrieve data, then
               you can procede writing python code to find the solution for the

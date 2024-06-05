@@ -29,10 +29,10 @@ export async function runRivetGraph(graphId: GraphId, inputs?: GraphInputs): Pro
 
   const outputs = await runGraph(project, {
     graph: "Main Graph", //graphId
-    openAiKey: process.env.OPENAIKEY,
+    openAiKey: "1d584b105cb848da99e146f2c30a915b",
     openAiEndpoint: "https://aidevswe.openai.azure.com/openai/deployments/IFAB/chat/completions?api-version=2024-02-15-preview",
     chatNodeHeaders: {
-      "api-key": process.env.OPENAIKEY || ''
+      "api-key": "1d584b105cb848da99e146f2c30a915b"
     },
     inputs: {
       "input": inputs!.messages
